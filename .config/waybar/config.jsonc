@@ -16,8 +16,8 @@
     ],
 
     "modules-right": [
-        "custom/sep",
-        "network",
+        // "custom/sep",
+        // "network",
         "custom/sep",
         "cpu",
         "custom/sep",
