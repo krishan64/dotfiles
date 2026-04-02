@@ -12,12 +12,13 @@
 
 * {
   font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
 }
 
 window#waybar {
-  background-color: @bg;
+  /* background-color: @bg; */
+  background-color: alpha(@bg, 0.8);
   color: @fg;
 }
 
@@ -25,18 +26,20 @@ window#waybar {
   padding: 0 6px;
   color: @cyn;
   background: transparent;
-  border-bottom: 3px solid @bg;
+  border-bottom: 2px solid @bg;
 }
 #workspaces button.active {
   color: @cyn;
-  border-bottom: 3px solid @mag;
+  /* border-bottom: 3px solid @mag; */
+  border-bottom: 2px solid @cyn;
 }
 #workspaces button.empty {
   color: @white;
 }
 #workspaces button.empty.active {
   color: @cyn;
-  border-bottom: 3px solid @mag;
+  /* border-bottom: 3px solid @mag; */
+  border-bottom: 2px solid @cyn;
 }
 
 #workspaces button.urgent {
@@ -67,7 +70,7 @@ button:hover {
 
 #clock {
   color: @cyn;
-  border-bottom: 4px solid @cyn;
+  border-bottom: 2px solid @cyn;
 }
 
 #battery {
@@ -77,17 +80,17 @@ button:hover {
 
 #disk {
   color: @ylw;
-  border-bottom: 4px solid @ylw;
+  border-bottom: 2px solid @ylw;
 }
 
 #memory {
   color: @mag;
-  border-bottom: 4px solid @mag;
+  border-bottom: 2px solid @mag;
 }
 
 #cpu {
   color: @red;
-  border-bottom: 4px solid @red;
+  border-bottom: 2px solid @red;
 }
 
 #network {
@@ -101,7 +104,7 @@ button:hover {
 
 #pulseaudio {
   color: @grn;
-  border-bottom: 4px solid @grn;
+  border-bottom: 2px solid @grn;
 }
 
 #tray {
