@@ -1,6 +1,6 @@
 return {
   "nvim-tree/nvim-tree.lua",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  dependencies = "nvim-tree/nvim-web-devicons",
   config = function()
     local nvimtree = require("nvim-tree")
 
@@ -8,14 +8,9 @@ return {
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
 
-    -- change color for arrows in tree to light blue
-    vim.cmd([[ highlight NvimTreeFolderArrowClosed guifg=#3FC5FF ]])
-    vim.cmd([[ highlight NvimTreeFolderArrowOpen guifg=#3FC5FF ]])
-
-    -- configure nvim-tree
     nvimtree.setup({
       view = {
-        width = 35,
+        width = 40,
         relativenumber = true,
       },
       -- change folder arrow icons
@@ -44,6 +39,7 @@ return {
       },
       filters = {
         custom = { ".DS_Store" },
+        dotfiles = fasle,
       },
       git = {
         ignore = false,
@@ -59,4 +55,3 @@ return {
     keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explorer" }) -- refresh file explorer
   end,
 }
-

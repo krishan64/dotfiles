@@ -1,2 +1,5 @@
-require("krishan.core")
-require("krishan.lazy")
+-- require("config")
+require("config.options")
+require("config.keymaps")
+require("config.lazy")
+require("config.autocmd")
