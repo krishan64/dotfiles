@@ -2,11 +2,7 @@
 {
     "layer": "top", 
     "position": "top", 
-    "height": 18,   // 30
-    "margin-top": 0,
-    "margin-bottom": 0,
-    "margin-left": 0,
-    "margin-right": 0,
+    "height": 25,   // 30
     "spacing": 0, 
 
     // Choose the order of the modules
@@ -23,14 +19,15 @@
     ],
 
     "modules-right": [
-        "hyprland/submap",
+        // "custom/sep",
+        // "network",
         "custom/sep",
         "cpu",
         "custom/sep",
         "memory",
         "custom/sep",
-        // "disk",
-        // "custom/sep",
+        "disk",
+        "custom/sep",
         "pulseaudio",
         "custom/sep",
         "clock",
@@ -49,12 +46,12 @@
         }
     },
     "hyprland/window" : {
-        "max-length": 50,
+        "max-length": 40,
         "seperate-outputs": false
     },
     "hyprland/windowcount": {
         "format": "[{}]",
-        "format-empty": "[0]",
+        "format-empty": "[X]",
         // "format-windowed": "[T]",
         // "format-fullscreen": "[{}]",
         "separate-outputs": true
@@ -68,35 +65,34 @@
         // }
     },
     "clock": {
-        // "format-alt": "{:%Y-%m-%d}"
-        "format": "{:L%A %H:%M}",
-        "format-alt": "{:L%d %B %Y}",
-        "tooltip": false,
+        "format-alt": "{:%Y-%m-%d}"
+        // "format": "{:L%A %H:%M}",
+        // "format-alt": "{:L%d %B %Y}",
+        // "tooltip": false,
     },
     "cpu": {
         "format": "CPU: {usage}%",
         "tooltip": false
     },
     "memory": {
-        // "format": "RAM: {used}GiB"
-        "format": "RAM: {}%"
+        "format": "Mem: {used}GiB"
     },
     "disk": {
         "interval": 60,
         "path": "/",
         "format": "Disk: {free}"
     },
-    // "battery": {
-    //     "states": {
-    //         "good": 95,
-    //         "warning": 30,
-    //         "critical": 15
-    //     },
-    //     "format": "Bat: {capacity}% {icon} {time}",
-    //     "format-alt": "Bat {capacity}%",
-    //     "format-time": "{H}:{M}",
-    //     "format-icons": ["", "", "", "", ""]
-    // },
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "Bat: {capacity}% {icon} {time}",
+        "format-alt": "Bat {capacity}%",
+        "format-time": "{H}:{M}",
+        "format-icons": ["", "", "", "", ""]
+    },
     "network": {
         // "format": "Online",
         // "format-disconnected": "Disconnected ⚠"
@@ -110,17 +106,12 @@
         "format" : "|",
         "interval" : 0
     },
-    "hyprland/submap": {
-        "format": "Sub: {}",
-        "max-length": 25,
-        "tooltip": false
-    },
     "pulseaudio": {
-        "format": "  {volume}%",
-        "format-bluetooth": "  {volume}%",
+        "format": "{volume}%  ",
+        "format-bluetooth": "{volume}%  ",
         "format-bluetooth-muted": "",
         "format-muted": " ",
-        "format-source": " {volume}%",
+        "format-source": "{volume}% ",
         "format-source-muted": "",
         // "on-click": "pulsemixer"
         "on-click": "pavucontrol"
