@@ -1,0 +1,13 @@
+configuration {
+  display-drun: "Applications";
+  display-run: "Commands";
+  display-window: "Windows:";
+  drun-display-format: "{icon} {name}";
+  font: "JetBrainMono NF Medium 12";
+  modi: "window,run,drun";
+  show-icons: true;
+}
+
+@theme "simple-tokyonight.rasi"
+
+// @theme "/home/krishan/.local/share/rofi/themes/tokyonight_big1.rasi"
