@@ -16,10 +16,10 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "foot"
+local terminal    = "ghostty"
 local fileManager = "thunar"
--- local menu        = "hyprlauncher"
-local menu        = "rofi -show drun"
+local launcher    = "rofi -show drun"
+local runner      = "rofi -show run"
 local webBrowser  = "firefox"
 
 
@@ -33,9 +33,11 @@ local webBrowser  = "firefox"
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function () 
-    hl.exec_cmd("waybar & hyprpaper & hypridle")
+    hl.exec_cmd("hyprpaper & hypridle")
+    hl.exec_cmd("waybar")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("nm-applet")
+    hl.exec_cmd(terminal)
 end)
 
 
@@ -101,7 +103,7 @@ hl.config({
     },
 
     decoration = {
-        rounding       = 8,
+        rounding       = 0,  -- 8
         rounding_power = 3,
 
         -- Change transparency of focused and unfocused windows
@@ -119,13 +121,16 @@ hl.config({
             enabled   = true,
             size      = 8,
             passes    = 2,
-            -- vibrancy  = 0.1696,
             vibrancy  = 0.5,
             vibrancy_darkness  = 0.5,
             xray = true,
             brightness = 1,
             noise = 0.05,
             contrast = 0.89,
+            special = true,
+            popups = true,
+            new_optimizations = true,
+            ignore_opacity = true,
         },
     },
 
@@ -157,7 +162,8 @@ hl.curve("emphasizedDecel", {
 })
 
 -- Default springs
-hl.curve("easy",           { type = "spring", mass = 1, stiffness = 71.2633, dampening = 15.8273644 })
+-- hl.curve("easy",           { type = "spring", mass = 1, stiffness = 71.2633, dampening = 15.8273644 })
+hl.curve("easy",           { type = "spring", mass = 1, stiffness = 238.1191, dampening = 24.21279333 })
 
 hl.animation({ leaf = "global",        enabled = true,  speed = 10,   bezier = "default" })
 hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
@@ -186,7 +192,6 @@ hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "
 -- "Smart gaps" / "No gaps when only"
 -- uncomment all if you wish to use that.
 -- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
-hl.workspace_rule({ workspace = "2", layout = "monocle", gaps_out = 0, no_rounding = true })
 
 -- hl.window_rule({
 --     name  = "no-gaps-wtv1",
@@ -201,10 +206,6 @@ hl.workspace_rule({ workspace = "2", layout = "monocle", gaps_out = 0, no_roundi
 --     rounding    = 0,
 -- })
 
-hl.window_rule({ match = { class = "mpv"}, float = true, size = {1280, 720} })
-hl.window_rule({ match = { class = "imv"}, float = true, size = {1280, 720} })
-
-hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
@@ -297,17 +298,58 @@ hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("keepassxc"))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }), {description = "Maximize"} )
 hl.bind(mainMod .. " + ALT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), {description = "Fullscreen"} )
-hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher))
+hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.exec_cmd(runner))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("killall waybar || waybar"))
 hl.bind("CTRL + ALT + L", hl.dsp.exec_cmd("hyprlock"))
 
+local function workspaceIsScrolling()
+	return hl.get_active_workspace().tiled_layout == "scrolling"
+end
+
+local function workspaceIsMonocle()
+	return hl.get_active_workspace().tiled_layout == ("monocle" or "master")
+end
+
+hl.bind(mainMod .. " + j", function()
+	if workspaceIsMonocle() then
+		hl.dispatch(hl.dsp.layout("cyclenext"))
+	else
+		hl.dispatch(hl.dsp.focus({ direction = "down" }))
+	end
+end)
+
+hl.bind(mainMod .. " + k", function()
+	if workspaceIsMonocle() then
+		hl.dispatch(hl.dsp.layout("cycleprev"))
+	else
+		hl.dispatch(hl.dsp.focus({ direction = "up" }))
+	end
+end)
+
+hl.bind(mainMod .. " + l", function()
+	if workspaceIsScrolling() then
+		hl.dispatch(hl.dsp.layout("focus r"))
+	else
+		hl.dispatch(hl.dsp.focus({ direction = "right" }))
+	end
+end)
+
+hl.bind(mainMod .. " + h", function()
+	if workspaceIsScrolling() then
+		hl.dispatch(hl.dsp.layout("focus l"))
+	else
+		hl.dispatch(hl.dsp.focus({ direction = "left" }))
+	end
+end)
+
 -- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
+-- hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
+-- hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
+-- hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
+-- hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
 
 hl.bind(mainMod .. " + up", hl.dsp.layout("cycleprev"))
 hl.bind(mainMod .. " + down", hl.dsp.layout("cyclenext"))
@@ -357,7 +399,7 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 ---- SUBMAPS ----
 -----------------
 
-hl.bind("ALT + L", hl.dsp.submap("Layout"))
+hl.bind(mainMod .. " + ALT + L", hl.dsp.submap("Layout"))
 
 hl.define_submap("Layout", function()
 
@@ -381,7 +423,7 @@ hl.define_submap("Layout", function()
         hl.dsp.submap("reset")
     end, { description = "Switch to Monocle Layout" })
 
-    hl.bind("escape", hl.dsp.submap("reset"), { description = "Exit Mode" })
+    -- hl.bind("escape", hl.dsp.submap("reset"), { description = "Exit Mode" })
     hl.bind("catchall", hl.dsp.submap("reset"), { description = "Exit Mode on invalid key" })
 
 end)
@@ -392,6 +434,10 @@ end)
 
 -- See https://wiki.hypr.land/Configuring/Basics/Window-Rules/
 -- and https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
+
+-- workspace rules
+hl.workspace_rule({ workspace = "2", layout = "monocle", gaps_out = 0, no_rounding = true })
+-- hl.workspace_rule({ workspace = "2", layout = "scrolling",gaps_out = 0, gaps_in = 0, no_rounding = true })
 
 -- Example window rules that are useful
 
@@ -418,6 +464,12 @@ hl.window_rule({
 
     no_focus = true,
 })
+
+hl.window_rule({ match = { class = "mpv"}, float = true, size = {1280, 720} })
+hl.window_rule({ match = { class = "imv"}, float = true, size = {1280, 720} })
+
+-- Layer rules
+hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 
 -- Layer rules also return a handle.
 -- local overlayLayerRule = hl.layer_rule({

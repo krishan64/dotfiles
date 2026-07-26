@@ -3,6 +3,10 @@ font-style = Regular
 font-size = 10
 font-thicken = true
 
+cursor-style = "block"
+mouse-hide-while-typing = true
+#shell-integration-features = no-cursor
+
 background-opacity = 0.9
 theme = TokyoNight
 window-decoration = server
