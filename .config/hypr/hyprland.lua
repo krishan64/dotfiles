@@ -239,6 +239,10 @@ hl.config({
         force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
     },
+    cursor = {
+        hide_on_key_press = true,
+        warp_on_change_workspace = 1,
+    },
 })
 
 
@@ -305,45 +309,51 @@ hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("killall waybar || waybar"))
 hl.bind("CTRL + ALT + L", hl.dsp.exec_cmd("hyprlock"))
 
-local function workspaceIsScrolling()
-	return hl.get_active_workspace().tiled_layout == "scrolling"
+-- Per layout bindings
+local function layout_bind(bind_table)
+    return function ()
+        local workspace = hl.get_active_special_workspace() or
+                          hl.get_active_workspace()
+
+        if not workspace then
+            return
+        end
+
+        local layout = workspace.tiled_layout
+                
+        if bind_table[layout] then
+            hl.dispatch(bind_table[layout])
+        end
+    end
 end
 
-local function workspaceIsMonocle()
-	return hl.get_active_workspace().tiled_layout == ("monocle" or "master")
-end
+hl.bind(mainMod .. " + J", layout_bind({
+    scrolling = hl.dsp.focus({ direction = "down" }),
+    dwindle   = hl.dsp.focus({ direction = "down" }),
+    monocle   = hl.dsp.layout("cycleprev"),
+    master    = hl.dsp.layout("cycleprev"),
+}))
 
-hl.bind(mainMod .. " + j", function()
-	if workspaceIsMonocle() then
-		hl.dispatch(hl.dsp.layout("cyclenext"))
-	else
-		hl.dispatch(hl.dsp.focus({ direction = "down" }))
-	end
-end)
+hl.bind(mainMod .. " + K", layout_bind({
+    scrolling = hl.dsp.focus({ direction = "up" }),
+    dwindle   = hl.dsp.focus({ direction = "up" }),
+    monocle   = hl.dsp.layout("cyclenext"),
+    master    = hl.dsp.layout("cyclenext"),
+}))
 
-hl.bind(mainMod .. " + k", function()
-	if workspaceIsMonocle() then
-		hl.dispatch(hl.dsp.layout("cycleprev"))
-	else
-		hl.dispatch(hl.dsp.focus({ direction = "up" }))
-	end
-end)
+hl.bind(mainMod .. " + L", layout_bind({
+    scrolling = hl.dsp.layout("focus r"),
+    dwindle   = hl.dsp.focus({ direction = "right" }),
+    monocle   = hl.dsp.focus({ direction = "right" }),
+    master    = hl.dsp.focus({ direction = "right" }),
+}))
 
-hl.bind(mainMod .. " + l", function()
-	if workspaceIsScrolling() then
-		hl.dispatch(hl.dsp.layout("focus r"))
-	else
-		hl.dispatch(hl.dsp.focus({ direction = "right" }))
-	end
-end)
-
-hl.bind(mainMod .. " + h", function()
-	if workspaceIsScrolling() then
-		hl.dispatch(hl.dsp.layout("focus l"))
-	else
-		hl.dispatch(hl.dsp.focus({ direction = "left" }))
-	end
-end)
+hl.bind(mainMod .. " + H", layout_bind({
+    scrolling = hl.dsp.layout("focus l"),
+    dwindle   = hl.dsp.focus({ direction = "left" }),
+    monocle   = hl.dsp.focus({ direction = "left" }),
+    master    = hl.dsp.focus({ direction = "left" }),
+}))
 
 -- Move focus with mainMod + arrow keys
 -- hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
@@ -395,38 +405,66 @@ hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
+-- Cycle layout for current workspace
+hl.bind(mainMod .. " + SHIFT + tab", function ()
+    local layouts     = { "scrolling", "dwindle", "master", "monocle" }
+    local workspace   = hl.get_active_workspace()
+	if hl.get_active_special_workspace() then
+		workspace = hl.get_active_special_workspace()
+	end
+
+    local next_layout = "dwindle"
+
+    if not workspace then
+        return
+    end
+
+    for i = 1, #layouts do
+        if layouts[i] == workspace.tiled_layout then
+            local next_layout_idx = (i % #layouts) + 1
+            next_layout = layouts[next_layout_idx]
+            break
+        end
+    end
+
+	if workspace.special then
+		hl.workspace_rule({ workspace = tostring(workspace.name), layout = next_layout })
+	else
+		hl.workspace_rule({ workspace = tostring(workspace.id), layout = next_layout })
+	end
+end)
+
+-- Toggle animations/blur
+hl.bind(mainMod .. " + F1", function ()
+    local game_mode = (hl.get_config("animations.enabled") == false)
+
+    if game_mode then
+        hl.exec_cmd("hyprctl reload")
+        return
+    end
+    
+    hl.config({
+        -- general = {
+        --     gaps_in = 0, gaps_out = 0, -- Disable gaps  
+        --     border_size = 0,
+        -- },
+
+        animations = {
+            enabled = false, -- Disable animations
+        },
+        
+        -- Disable blur, shadow and window rounding
+        decoration = {
+            shadow = { enabled = false },
+            blur = { enabled = false },
+            rounding = 0,
+        }
+    })
+end)
+
 -----------------
 ---- SUBMAPS ----
 -----------------
-
-hl.bind(mainMod .. " + ALT + L", hl.dsp.submap("Layout"))
-
-hl.define_submap("Layout", function()
-
-    hl.bind("D", function()
-        hl.config({ general = { layout = "dwindle" }, })
-        hl.dsp.submap("reset")
-    end, { description = "Switch to Dwindle Layout" })
-
-    hl.bind("M", function()
-        hl.config({ general = { layout = "master" }, })
-        hl.dsp.submap("reset")
-    end, { description = "Switch to Master Layout" })
-
-    hl.bind("S", function()
-        hl.config({ general = { layout = "scrolling" }, })
-        hl.dsp.submap("reset")
-    end, { description = "Switch to Scrolling Layout" })
-
-    hl.bind("F", function()
-        hl.config({ general = { layout = "monocle" }, })
-        hl.dsp.submap("reset")
-    end, { description = "Switch to Monocle Layout" })
-
-    -- hl.bind("escape", hl.dsp.submap("reset"), { description = "Exit Mode" })
-    hl.bind("catchall", hl.dsp.submap("reset"), { description = "Exit Mode on invalid key" })
-
-end)
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
