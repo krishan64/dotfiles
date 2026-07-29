@@ -227,6 +227,7 @@ hl.config({
 hl.config({
     scrolling = {
         fullscreen_on_one_column = true,
+        column_width = 0.49,
     },
 })
 
@@ -239,9 +240,14 @@ hl.config({
         force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
     },
+
     cursor = {
         hide_on_key_press = true,
         warp_on_change_workspace = 1,
+    },
+
+    binds = {
+     hide_special_on_workspace_change = true,
     },
 })
 
@@ -344,28 +350,49 @@ hl.bind(mainMod .. " + K", layout_bind({
 hl.bind(mainMod .. " + L", layout_bind({
     scrolling = hl.dsp.layout("focus r"),
     dwindle   = hl.dsp.focus({ direction = "right" }),
-    monocle   = hl.dsp.focus({ direction = "right" }),
     master    = hl.dsp.focus({ direction = "right" }),
 }))
 
 hl.bind(mainMod .. " + H", layout_bind({
     scrolling = hl.dsp.layout("focus l"),
     dwindle   = hl.dsp.focus({ direction = "left" }),
-    monocle   = hl.dsp.focus({ direction = "left" }),
     master    = hl.dsp.focus({ direction = "left" }),
 }))
 
--- Move focus with mainMod + arrow keys
+-- hl.bind(mainMod .. " + SHIFT + RETURN", layout_bind({
+--     master    = hl.dsp.layout("swapwithmaster"),
+-- }))
+
+hl.bind(mainMod .. " + SHIFT + L", layout_bind({
+    scrolling = hl.dsp.layout("swapcol r"),
+    dwindle   = hl.dsp.window.move({ direction = "right" }),
+    master    = hl.dsp.window.move({ direction = "right" }),
+}))
+
+hl.bind(mainMod .. " + SHIFT + H", layout_bind({
+    scrolling = hl.dsp.layout("swapcol l"),
+    dwindle   = hl.dsp.window.move({ direction = "left" }),
+    master    = hl.dsp.window.move({ direction = "left" }),
+}))
+
+hl.bind(mainMod .. " + left", layout_bind({
+    master   = hl.dsp.layout("mfact -0.05"),
+    dwindle  = hl.dsp.layout("splitratio -0.1"),
+}))
+
+hl.bind(mainMod .. " + right", layout_bind({
+    master   = hl.dsp.layout("mfact +0.05"),
+    dwindle  = hl.dsp.layout("splitratio +0.1"),
+}))
+
+-- Move focus with mainMod + vim keys
 -- hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
 -- hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
 -- hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
 -- hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
-
-hl.bind(mainMod .. " + up", hl.dsp.layout("cycleprev"))
-hl.bind(mainMod .. " + down", hl.dsp.layout("cyclenext"))
-
-hl.bind(mainMod .. " + SHIFT + H",  hl.dsp.window.move({ direction = "left" }))
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
+--
+-- hl.bind(mainMod .. " + SHIFT + H",  hl.dsp.window.move({ direction = "left" }))
+-- hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mainMod .. " + SHIFT + K",    hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + SHIFT + J",  hl.dsp.window.move({ direction = "down" }))
 
