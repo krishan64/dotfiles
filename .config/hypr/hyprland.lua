@@ -17,8 +17,9 @@ hl.monitor({
 
 -- Set programs that you use
 local terminal    = "ghostty"
-local fileManager = "thunar"
-local launcher    = "rofi -show drun"
+local fileManager = "nautilus"
+-- local launcher    = "rofi -show drun"
+local launcher    = "hyprlauncher"
 local runner      = "rofi -show run"
 local webBrowser  = "firefox"
 
@@ -81,6 +82,9 @@ hl.env("WLR_NO_HARDWARE_CURSORS", 1)
 -----------------------
 
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
+local active_border_color = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 }
+local inactive_border_color = "rgba(595959aa)"
+
 hl.config({
     general = {
         gaps_in  = 5,
@@ -89,8 +93,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
-            inactive_border = "rgba(595959aa)",
+            active_border   = active_border_color,
+            inactive_border = inactive_border_color,
         },
 
         -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -109,6 +113,9 @@ hl.config({
         -- Change transparency of focused and unfocused windows
         active_opacity   = 1.0,
         inactive_opacity = 1.0,
+
+        -- dim_inactive = true,
+        -- dim_strength = 0.15,
 
         shadow = {
             enabled      = true,
@@ -146,29 +153,15 @@ hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}   
 hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1}    } })
 hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}     } })
 
-hl.curve("menu_decel", {
-    type = "bezier",
-    points = {{0.1, 1}, {0, 1}}
-})
-
-hl.curve("emphasizedAccel", {
-    type = "bezier",
-    points = {{0.3, 0}, {0.8, 0.15}}
-})
-
-hl.curve("emphasizedDecel", {
-    type = "bezier",
-    points = {{0.05, 0.7}, {0.1, 1}}
-})
+hl.curve("menu_decel",     { type = "bezier", points = { {0.1, 1},     {0, 1}       } })
 
 -- Default springs
--- hl.curve("easy",           { type = "spring", mass = 1, stiffness = 71.2633, dampening = 15.8273644 })
 hl.curve("easy",           { type = "spring", mass = 1, stiffness = 238.1191, dampening = 24.21279333 })
 
 hl.animation({ leaf = "global",        enabled = true,  speed = 10,   bezier = "default" })
 hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
-hl.animation({ leaf = "windows",       enabled = true,  speed = 4.79, spring = "easy" })
-hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 4.1,  spring = "easy",         style = "popin 87%" })
+hl.animation({ leaf = "windows",       enabled = true,  speed = 3.79, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 4.1,  bezier = "easeOutQuint",         style = "popin 87%" })
 hl.animation({ leaf = "windowsOut",    enabled = true,  speed = 1.49, bezier = "linear",       style = "popin 87%" })
 hl.animation({ leaf = "fadeIn",        enabled = true,  speed = 1.73, bezier = "almostLinear" })
 hl.animation({ leaf = "fadeOut",       enabled = true,  speed = 1.46, bezier = "almostLinear" })
@@ -182,10 +175,7 @@ hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 1.39, bezier = "
 -- hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 1.21, bezier = "almostLinear", style = "fade" })
 -- hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
 hl.animation({ leaf = "workspaces",    enabled = true,  speed = 7,    bezier = "menu_decel", style = "slide" })
-hl.animation({ leaf = "specialWorkspaceIn",    enabled = true,  speed = 2.8,    bezier = "emphasizedAccel", style = "slidevert" })
-hl.animation({ leaf = "specialWorkspaceOut",    enabled = true,  speed = 1.2,    bezier = "emphasizedAccel", style = "slidevert" })
--- hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 3,  bezier = "emphasizedDecel",         style = "popin 80%" })
--- hl.animation({ leaf = "windowsOut",    enabled = true,  speed = 2, bezier = "emphasizedDecel",       style = "popin 90%" })
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "easeOutQuint", style = "slidevert" })
 hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
 
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
@@ -337,14 +327,14 @@ hl.bind(mainMod .. " + J", layout_bind({
     scrolling = hl.dsp.focus({ direction = "down" }),
     dwindle   = hl.dsp.focus({ direction = "down" }),
     monocle   = hl.dsp.layout("cycleprev"),
-    master    = hl.dsp.layout("cycleprev"),
+    master    = hl.dsp.layout("cyclenext"),
 }))
 
 hl.bind(mainMod .. " + K", layout_bind({
     scrolling = hl.dsp.focus({ direction = "up" }),
     dwindle   = hl.dsp.focus({ direction = "up" }),
     monocle   = hl.dsp.layout("cyclenext"),
-    master    = hl.dsp.layout("cyclenext"),
+    master    = hl.dsp.layout("cycleprev"),
 }))
 
 hl.bind(mainMod .. " + L", layout_bind({
@@ -401,7 +391,7 @@ hl.bind(mainMod .. " + SHIFT + J",  hl.dsp.window.move({ direction = "down" }))
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
     hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i, follow = false }))
 end
 
 hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previus" }))
