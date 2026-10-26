@@ -3,10 +3,15 @@ font-style = Regular
 font-size = 10
 font-thicken = true
 
+#window-padding-x = 10
+#window-padding-y = 10
+
 cursor-style = "block"
+cursor-style-blink = true
 mouse-hide-while-typing = true
-#shell-integration-features = no-cursor
+shell-integration-features = no-cursor,ssh-env
 
 background-opacity = 0.9
+background-blur = true
 theme = TokyoNight
 window-decoration = server

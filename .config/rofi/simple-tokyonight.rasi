@@ -39,15 +39,16 @@ window {
   y-offset : 26px;
 
   background-color: @bg1;
-  border: 1px;
-  border-color: @bg3;
-  border-radius: 6px;
+  border: 2px;
+  // border-color: @bg3;
+  border-color: @accent;
+  border-radius: 0px;
 }
 
 inputbar {
   spacing  : 8px;
   padding  : 4px 8px;
-  children : [ icon-search, entry ];
+  // children : [ icon-search, entry ];
 
   background-color: @bg0;
 }
