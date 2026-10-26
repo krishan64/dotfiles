@@ -16,10 +16,10 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "ghostty"
+local terminal    = "foot"
 local fileManager = "nautilus"
--- local launcher    = "rofi -show drun"
-local launcher    = "hyprlauncher"
+-- local launcher    = "hyprlauncher"
+local launcher    = "rofi -show drun"
 local runner      = "rofi -show run"
 local webBrowser  = "firefox"
 
@@ -34,11 +34,14 @@ local webBrowser  = "firefox"
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function () 
-    hl.exec_cmd("hyprpaper & hypridle")
+    hl.exec_cmd("hyprpaper")
+    -- hl.exec_cmd("swaybg -i ~/.local/share/bg.jpg")
     hl.exec_cmd("waybar")
+    hl.exec_cmd("hypridle")
+    hl.exec_cmd("hyprsunset")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
+    -- hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     hl.exec_cmd("nm-applet")
-    hl.exec_cmd(terminal)
 end)
 
 
@@ -82,13 +85,15 @@ hl.env("WLR_NO_HARDWARE_CURSORS", 1)
 -----------------------
 
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
-local active_border_color = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 }
+-- local active_border_color = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 }    -- Default
+-- local active_border_color = { colors = { "rgba(89b4faff)" }, angle = 45 }
+local active_border_color = "rgba(0db9d7ee)"
 local inactive_border_color = "rgba(595959aa)"
 
 hl.config({
     general = {
-        gaps_in  = 5,
-        gaps_out = 5,
+        gaps_in  = 3,
+        gaps_out = 6,
 
         border_size = 2,
 
@@ -303,6 +308,7 @@ hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.exec_cmd(runner))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("killall waybar || waybar"))
+-- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("killall -SIGUSR1 waybar"))
 hl.bind("CTRL + ALT + L", hl.dsp.exec_cmd("hyprlock"))
 
 -- Per layout bindings
@@ -423,7 +429,7 @@ hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 -- Cycle layout for current workspace
-hl.bind(mainMod .. " + SHIFT + tab", function ()
+hl.bind(mainMod .. " + N", function ()
     local layouts     = { "scrolling", "dwindle", "master", "monocle" }
     local workspace   = hl.get_active_workspace()
 	if hl.get_active_special_workspace() then
@@ -461,10 +467,10 @@ hl.bind(mainMod .. " + F1", function ()
     end
     
     hl.config({
-        -- general = {
-        --     gaps_in = 0, gaps_out = 0, -- Disable gaps  
-        --     border_size = 0,
-        -- },
+        general = {
+            gaps_in = 0, gaps_out = 0, -- Disable gaps  
+            -- border_size = 0,
+        },
 
         animations = {
             enabled = false, -- Disable animations
@@ -491,8 +497,7 @@ end)
 -- and https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
 
 -- workspace rules
-hl.workspace_rule({ workspace = "2", layout = "monocle", gaps_out = 0, no_rounding = true })
--- hl.workspace_rule({ workspace = "2", layout = "scrolling",gaps_out = 0, gaps_in = 0, no_rounding = true })
+-- hl.workspace_rule({ workspace = "2", layout = "monocle", gaps_out = 0, no_rounding = true })
 
 -- Example window rules that are useful
 
@@ -522,6 +527,8 @@ hl.window_rule({
 
 hl.window_rule({ match = { class = "mpv"}, float = true, size = {1280, 720} })
 hl.window_rule({ match = { class = "imv"}, float = true, size = {1280, 720} })
+
+hl.window_rule({ match = { class = "myFloat"}, float = true, size = {1280, 720} })
 
 -- Layer rules
 hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
