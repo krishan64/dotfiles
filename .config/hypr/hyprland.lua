@@ -2,14 +2,12 @@
 ---- MONITORS ----
 ------------------
 
--- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
     output   = "",
     mode     = "1920x1080@60",
     position = "auto",
     scale    = "1",
 })
-
 
 ---------------------
 ---- MY PROGRAMS ----
@@ -22,7 +20,6 @@ local fileManager = "nautilus"
 local launcher    = "rofi -show drun"
 local runner      = "rofi -show run"
 local webBrowser  = "firefox"
-
 
 -------------------
 ---- AUTOSTART ----
@@ -44,12 +41,9 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("nm-applet")
 end)
 
-
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
-
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
@@ -79,7 +73,6 @@ hl.env("WLR_NO_HARDWARE_CURSORS", 1)
 -- hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
 -- hl.permission("/usr/(bin|local/bin)/hyprpm", "plugin", "allow")
 
-
 -----------------------
 ---- LOOK AND FEEL ----
 -----------------------
@@ -102,10 +95,8 @@ hl.config({
             inactive_border = inactive_border_color,
         },
 
-        -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
         resize_on_border = false,
 
-        -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
         allow_tearing = false,
 
         layout = "dwindle",
@@ -135,14 +126,26 @@ hl.config({
             passes    = 2,
             vibrancy  = 0.5,
             vibrancy_darkness  = 0.5,
+            -- vibrancy  = 0.1696,
+            -- vibrancy_darkness  = 0.0,
             xray = true,
             brightness = 1,
             noise = 0.05,
-            contrast = 0.89,
-            special = true,
+            -- noise = 0.0117,
+            contrast = 0.8916,
+            special = false,
             popups = true,
             new_optimizations = true,
             ignore_opacity = true,
+            variant = "kawase",
+        },
+
+        motion_blur = {
+           enabled = false, 
+        },
+
+        wobble = {
+           enabled = false, 
         },
     },
 
@@ -202,7 +205,6 @@ hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "
 -- })
 
 
--- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
     dwindle = {
         preserve_split = true, -- You probably want this
@@ -210,7 +212,6 @@ hl.config({
     },
 })
 
--- See https://wiki.hypr.land/Configuring/Layouts/Master-Layout/ for more
 hl.config({
     master = {
         new_status = "master",
@@ -218,7 +219,6 @@ hl.config({
     },
 })
 
--- See https://wiki.hypr.land/Configuring/Layouts/Scrolling-Layout/ for more
 hl.config({
     scrolling = {
         fullscreen_on_one_column = true,
@@ -232,8 +232,10 @@ hl.config({
 
 hl.config({
     misc = {
-        force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-        disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+        force_default_wallpaper = 1,
+        disable_hyprland_logo   = false,
+        disable_splash_rendering = true,
+        focus_on_activate = true,
     },
 
     cursor = {
@@ -242,10 +244,10 @@ hl.config({
     },
 
     binds = {
-     hide_special_on_workspace_change = true,
+        hide_special_on_workspace_change = true,
+        workspace_back_and_forth = 1,
     },
 })
-
 
 ---------------
 ---- INPUT ----
@@ -284,7 +286,6 @@ hl.device({
     name        = "epic-mouse-v1",
     sensitivity = -0.5,
 })
-
 
 ---------------------
 ---- KEYBINDINGS ----
@@ -400,7 +401,7 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i, follow = false }))
 end
 
-hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previus" }))
+hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previous" }))
 
 -- Example special workspace (scratchpad)
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
@@ -415,12 +416,12 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
--- hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
--- hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
--- hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
--- hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
--- hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
--- hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 
 -- Requires playerctl
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
